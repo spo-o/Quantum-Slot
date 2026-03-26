@@ -14,6 +14,7 @@ export default function App() {
   const [hash, setHash] = useState("");
   const [timestamp, setTimestamp] = useState("");
   const [mapping, setMapping] = useState(null);
+  const [resultReady, setResultReady] = useState(false);
 
   const intervalRef = useRef(null);
   const audioRef = useRef(null);
@@ -52,17 +53,17 @@ export default function App() {
   };
 
   const spin = async () => {
-    if (spinning) return; // prevent double click
-
+    if (spinning) return;
+  
+    setResultReady(false);
     setSpinning(true);
     setJackpot(false);
-
-    
+  
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
     }
-
-    // start spinning
+  
+    // start spinning animation
     intervalRef.current = setInterval(() => {
       setReels([
         symbols[Math.floor(Math.random() * symbols.length)],
@@ -70,65 +71,65 @@ export default function App() {
         symbols[Math.floor(Math.random() * symbols.length)],
       ]);
     }, 80);
-
+  
+    // 🔥 run BOTH in parallel
+    const entropyPromise = fetchEntropy();
+  
     let ent;
-
-try {
-  ent = await fetchEntropy();
-} catch (e) {
-  console.error("Quantum failed:", e);
-
-  // stop spinning 
-  if (intervalRef.current) {
-    clearInterval(intervalRef.current);
-    intervalRef.current = null;
-  }
-
-  setSpinning(false);
-  return;
-}
-setEntropy(ent);
-
-// create visible hash for UI
-const h = await generateHash(ent.join("-"));
-setHash(h);
-
-// mapping from quantum entropy
-const final = [
-  symbols[ent[0] % symbols.length],
-  symbols[(ent[1] + ent[3]) % symbols.length],
-  symbols[(ent[2] + ent[5]) % symbols.length],
-];
-setMapping({
-  inputs: [ent[0], ent[1], ent[2]],
-  outputs: final,
-});
- // stagger stops
-    setTimeout(() => {
-      setReels((r) => [final[0], r[1], r[2]]);
-    }, 1000);
-
-    setTimeout(() => {
-      setReels((r) => [final[0], final[1], r[2]]);
-    }, 1500);
-
-    setTimeout(() => {
-      
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-        intervalRef.current = null;
-      }
-
-      setReels(final);
+    try {
+      ent = await entropyPromise;
+    } catch (e) {
+      console.error("Quantum failed:", e);
+  
+      clearInterval(intervalRef.current);
       setSpinning(false);
-
-      if (final[0] === final[1] && final[1] === final[2]) {
-        setJackpot(true);
-        playSound();
-      }
+      return;
+    }
+  
+    // process data (but DON'T show yet)
+    const h = await generateHash(ent.join("-"));
+  
+    const final = [
+      symbols[ent[0] % symbols.length],
+      symbols[(ent[1] + ent[3]) % symbols.length],
+      symbols[(ent[2] + ent[5]) % symbols.length],
+    ];
+  
+    const mappingData = {
+      inputs: [ent[0], ent[1], ent[2]],
+      outputs: final,
+    };
+  
+    // ⏱ ensure minimum spin time (2s)
+    setTimeout(() => {
+      clearInterval(intervalRef.current);
+  
+      // stagger stops
+      setReels([final[0], "?", "?"]);
+  
+      setTimeout(() => {
+        setReels([final[0], final[1], "?"]);
+      }, 300);
+  
+      setTimeout(() => {
+        setReels(final);
+  
+        // 🔥 NOW update everything at once
+        setEntropy(ent);
+        setHash(h);
+        setMapping(mappingData);
+  
+        setSpinning(false);
+        setResultReady(true);
+  
+        if (final[0] === final[1] && final[1] === final[2]) {
+          setJackpot(true);
+          playSound();
+        }
+      }, 600);
+  
     }, 2000);
   };
-
   return (
     <div className={`app ${jackpot ? "jackpot-bg shake" : ""}`}>
       <div className="overlay"></div>
@@ -169,7 +170,7 @@ setMapping({
   
         <audio ref={audioRef} src={jackpotSound} />
   
-        {entropy && (
+        {resultReady && (
           <div className="panel">
             <p><b>Entropy:</b> {entropy.slice(0, 10).join(", ")}</p>
             <p><b>Source:</b> {source}</p>
