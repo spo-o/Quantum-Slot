@@ -2,7 +2,7 @@ import { useState, useRef } from "react";
 import "./index.css";
 import jackpotSound from "./assets/floraphonic-playful-casino-slot-machine-jackpot-3-183921.mp3";
 
-const symbols = ["🍒","💎","7️⃣","🍀","⭐","🔔","🍉","🍇","💰","🃏"];
+const symbols = ["🍒","💎","7️⃣"];
 
 export default function App() {
   const [reels, setReels] = useState(["?", "?", "?"]);

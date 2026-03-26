@@ -9,12 +9,12 @@ Instead of relying on pseudo-random functions like Math.random(), every spin is 
 - Fetches real quantum entropy from CURBy
 - Uses that entropy to deterministically generate slot results
 - Displays:
-- - Raw entropy values
-- - Source (Quantum)
-- - Proof hash (SHA-256)
-- - Quantum pulse timestamp
-- - Local spin time
-- - Mapping from entropy → symbols
+ - Raw entropy values
+ - Source (Quantum)
+ - Proof hash (SHA-256)
+ - Quantum pulse timestamp
+ - Local spin time
+ - Mapping from entropy → symbols
 
 ## Tech Stack
 
@@ -27,11 +27,11 @@ Instead of relying on pseudo-random functions like Math.random(), every spin is 
 
 1. Backend calls CURBy endpoint: "https://random.colorado.edu/api/chains/xxx/pulses/latest"
 
-2. Fetch Entropy from endpoint.
+2. Fetch latest quantum pulse from CURBy.
 
 3. Combine entropy with:
-- a pre-seed value
-- a salt
+- a pre(Quantum-derived value)
+- a salt(additional entropy)
 - CURBy’s timestamp (quantum pulse time)
 - current system time (spin time)
 
@@ -40,6 +40,20 @@ Instead of relying on pseudo-random functions like Math.random(), every spin is 
 5. Use entropy values to deterministically map to slot symbols
 
 6. Display everything for transparency
+
+## Testing / Demo Tip
+
+Hitting a jackpot with many symbols can take a while due to randomness.
+
+To quickly test the jackpot behavior:
+
+Reduce the number of symbols in App.jsx (e.g., to 3) - const symbols = ["🍒","💎","7️⃣"];
+
+This increases the probability of matching all three reels, allowing you to easily observe:
+
+- jackpot animation
+- confetti effects
+- sound trigger
 
 ## Running locally
 
@@ -52,3 +66,4 @@ node server.js
 
 FRONTEND
 npm run dev
+
