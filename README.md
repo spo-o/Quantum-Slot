@@ -48,6 +48,10 @@ This increases the probability of matching all three reels, allowing you to easi
 - confetti effects
 - sound trigger
 
+An example of a successful jackpot is shown below.
+
+![Jackpot Example](./public/jackpot.jpeg)
+
 ## Running locally
 
 ```bash
