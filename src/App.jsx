@@ -2,7 +2,7 @@ import { useState, useRef } from "react";
 import "./index.css";
 import jackpotSound from "./assets/floraphonic-playful-casino-slot-machine-jackpot-3-183921.mp3";
 
-const symbols = ["🍒","💎","7️⃣"];
+const symbols = ["🍒","💎","7️⃣","🍀","⭐","🔔","🍉","🍇","💰","🃏"];
 
 export default function App() {
   const [reels, setReels] = useState(["?", "?", "?"]);
@@ -57,7 +57,7 @@ export default function App() {
     setSpinning(true);
     setJackpot(false);
 
-    // ✅ CLEAR any existing interval FIRST
+    
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
     }
@@ -78,7 +78,7 @@ try {
 } catch (e) {
   console.error("Quantum failed:", e);
 
-  // stop spinning cleanly
+  // stop spinning 
   if (intervalRef.current) {
     clearInterval(intervalRef.current);
     intervalRef.current = null;
@@ -89,11 +89,11 @@ try {
 }
 setEntropy(ent);
 
-// create visible hash (for UI, optional)
+// create visible hash for UI
 const h = await generateHash(ent.join("-"));
 setHash(h);
 
-// ✅ REAL deterministic mapping from quantum entropy
+// mapping from quantum entropy
 const final = [
   symbols[ent[0] % symbols.length],
   symbols[(ent[1] + ent[3]) % symbols.length],
@@ -113,7 +113,7 @@ setMapping({
     }, 1500);
 
     setTimeout(() => {
-      // ✅ STOP interval HERE (guaranteed)
+      
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
         intervalRef.current = null;
@@ -173,25 +173,15 @@ setMapping({
           <div className="panel">
             <p><b>Entropy:</b> {entropy.slice(0, 10).join(", ")}</p>
             <p><b>Source:</b> {source}</p>
-            <p>
-  <b>Proof Hash:</b> {hash.slice(0, 16)}...
-</p>
-<p>
-  <b>Quantum Pulse:</b> {timestamp}
-</p>
-<p>
-  <b>Spin Time:</b> {new Date().toLocaleTimeString()}
-</p>
-{mapping && (
-  <p style={{ fontSize: "13px", opacity: 0.8 }}>
-    <b>Mapping:</b>{" "}
-    {mapping.inputs.map((val, i) => (
-      <span key={i}>
-        {val} → {mapping.outputs[i]}{" "}
-      </span>
-    ))}
-  </p>
-)}
+            <p><b>Proof Hash:</b> {hash.slice(0, 16)}...</p>
+            <p><b>Quantum Pulse:</b> {timestamp}</p>
+            <p><b>Spin Time:</b> {new Date().toLocaleTimeString()}</p>
+            {mapping && (<p style={{ fontSize: "13px", opacity: 0.8 }}>
+            <b>Mapping:</b>{" "}
+                {mapping.inputs.map((val, i) => (
+                <span key={i}>
+                {val} → {mapping.outputs[i]}{" "}
+                </span>))}</p>)}
           </div>
         )}
       </div>
