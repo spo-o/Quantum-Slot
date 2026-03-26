@@ -27,7 +27,7 @@ export default function App() {
   };
 
   const fetchEntropy = async () => {
-    const res = await fetch("http://localhost:3001/entropy");
+    const res = await fetch("https://quantum-slot.onrender.com/entropy");
   
     if (!res.ok) {
       throw new Error("Quantum fetch failed");
