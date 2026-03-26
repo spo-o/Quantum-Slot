@@ -1,20 +1,13 @@
 # Quantum Avatar Engine
 
-This project is a web-based slot machine powered by real quantum entropy from the CURBy API (University of Colorado).
+This project is a web-based slot machine powered by real quantum entropy from the CURBy API (https://random.colorado.edu).
 
 Instead of relying on pseudo-random functions like Math.random(), every spin is driven by true quantum randomness. The outcome is deterministic, reproducible, and verifiable.
 
 ## What it does
 
-- Fetches real quantum entropy from CURBy
-- Uses that entropy to deterministically generate slot results
-- Displays:
- - Raw entropy values
- - Source (Quantum)
- - Proof hash (SHA-256)
- - Quantum pulse timestamp
- - Local spin time
- - Mapping from entropy → symbols
+This project fetches real quantum entropy from CURBy and uses it to deterministically generate slot machine results. Each spin is derived from this entropy and displayed transparently, including the raw entropy values, the quantum source, a SHA-256 proof hash, the quantum pulse timestamp, the local spin time, and the mapping from entropy to symbols. Unlike typical slot machines that rely on pseudo-random generators and cannot be independently verified, this system is built on real quantum data and produces deterministic outcomes, allowing anyone to verify the result using the provided hash and mapping.
+
 
 ## Tech Stack
 
